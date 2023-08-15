@@ -1,5 +1,12 @@
 package com.yixi.common.utils;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 public class ResultUtils {
     /**
      * 成功
@@ -26,4 +33,6 @@ public class ResultUtils {
     public static BaseResponse error(EventCode eventCode, String description){
         return new BaseResponse<>(eventCode.getCode(), null, eventCode.getMessage(), description);
     }
+
+
 }

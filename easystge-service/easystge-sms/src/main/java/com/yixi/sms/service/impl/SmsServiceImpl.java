@@ -4,13 +4,12 @@ import cn.hutool.extra.mail.MailUtil;
 import com.yixi.common.constants.EmailConstant;
 import com.yixi.common.exception.BusinessException;
 import com.yixi.common.utils.EventCode;
-import com.yixi.common.utils.ResponseData;
 import com.yixi.sms.service.SmsService;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,9 +20,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 public class SmsServiceImpl implements SmsService{
 
-    final private StringRedisTemplate redisTemplate;
+    final private RedisTemplate<String, Object> redisTemplate;
 
-    public SmsServiceImpl(StringRedisTemplate redisTemplate){
+    public SmsServiceImpl(RedisTemplate<String, Object> redisTemplate){
         this.redisTemplate = redisTemplate;
     }
 
@@ -45,7 +44,7 @@ public class SmsServiceImpl implements SmsService{
 
         //  防止同一个email在60秒内再次发送验证码
         //  获取redis保存的code值
-        String redisCode = redisTemplate.opsForValue().get(vcKey);
+        String redisCode = (String)redisTemplate.opsForValue().get(vcKey);
         if (StringUtils.hasLength(redisCode)){
             // 对code进行分割 获取code保存时的时间
             long l = Long.parseLong(redisCode.split("_")[1]);
@@ -54,11 +53,6 @@ public class SmsServiceImpl implements SmsService{
                 throw new BusinessException(EventCode.SMS_CODE_EXCEPTION,EventCode.SMS_CODE_EXCEPTION.getMessage());
             }
         }
-
-
-
-
-
 
         // 发送验证码到邮箱
         String content = "<p>您好，您的邮箱验证码是：<b style='font-size:20px;color:blue;'>"+code+"</b>，"+EmailConstant.EMAIL_VC_VALID_TIME+"分钟有效</p>";

@@ -12,13 +12,16 @@
             <result property="password" column="password" jdbcType="VARCHAR"/>
             <result property="useSpace" column="use_space" jdbcType="BIGINT"/>
             <result property="totalSpace" column="total_space" jdbcType="BIGINT"/>
+            <result property="userRole" column="user_role" jdbcType="TINYINT"/>
             <result property="lastLoginTime" column="last_login_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">
         user_id,nick_name,email,
         avatar,password,use_space,
-        total_space,last_login_time,is_deleted
+        total_space,user_role,last_login_time,create_time,update_time,is_deleted
     </sql>
 </mapper>

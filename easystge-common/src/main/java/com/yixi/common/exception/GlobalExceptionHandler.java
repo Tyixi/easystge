@@ -2,10 +2,8 @@ package com.yixi.common.exception;
 
 import com.yixi.common.utils.BaseResponse;
 import com.yixi.common.utils.EventCode;
-import com.yixi.common.utils.ResponseData;
 import com.yixi.common.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestControllerAdvice

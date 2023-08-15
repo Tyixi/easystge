@@ -4,14 +4,14 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * 用户注册表单信息
+ * 用户登录表单信息
+ *
  * @author yixi
- * @date 2023/8/6
+ * @date 2023/8/8
  * @apiNote
  */
 @Data
-public class UserRegistVo {
-
+public class UserLoginVo {
     /**
      * 用户邮箱号码
      */
@@ -24,11 +24,6 @@ public class UserRegistVo {
     @ApiModelProperty(value = "用户密码")
     private String password;
 
-    /**
-     *  邮箱验证码
-     */
-    @ApiModelProperty(value = "邮箱验证码")
-    private String emailVC;
 
     /**
      * 验证码
@@ -41,5 +36,4 @@ public class UserRegistVo {
      */
     @ApiModelProperty(value = "图形验证码Key")
     private String vcKey;
-
 }

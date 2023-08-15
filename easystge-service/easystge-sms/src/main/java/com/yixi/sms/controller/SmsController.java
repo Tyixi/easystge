@@ -18,8 +18,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/sms")
-@CrossOrigin
+@RequestMapping("/easystgesms")
 public class SmsController {
 
     final private SmsService smsService;
@@ -28,7 +27,6 @@ public class SmsController {
         this.smsService = smsService;
     }
 
-    //发送短信方法
 
     /**
      * 邮箱注册-发送邮箱验证码
@@ -36,7 +34,7 @@ public class SmsController {
      * @return
      * @throws Exception
      */
-    @GetMapping("/register/vc/{email}")
+    @GetMapping("/open/register/vc/{email}")
     public BaseResponse sendSmsRegister(@PathVariable String email) throws Exception{
         if (!StringUtils.hasLength(email)) throw new BusinessException(EventCode.NULL_ERROR);
 
@@ -45,13 +43,6 @@ public class SmsController {
         //调用service发送短信方法
         boolean isSend = smsService.sendMailVc(code,email);
         return ResultUtils.success(isSend);
-//        try {
-//            isSend = smsService.sendMailVc(code,email);
-//            return new ResponseData(true, "邮箱验证码发送成功", "200");
-//        }catch (Exception e){
-//            e.printStackTrace();
-//            return new ResponseData(false, e.getLocalizedMessage(), "R_501");
-//        }
     }
 
 }

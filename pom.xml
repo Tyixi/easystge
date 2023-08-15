@@ -5,6 +5,7 @@
     <modules>
         <module>easystge-common</module>
         <module>easystge-service</module>
+        <module>easystge-gateway</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -45,7 +46,7 @@
         <docker.image.prefix>zx</docker.image.prefix>
         <spring-boot-version>2.6.4</spring-boot-version>
         <spring-cloud-version>2021.0.1</spring-cloud-version>
-        <cloud-alibaba.version>0.2.2.RELEASE</cloud-alibaba.version>
+        <cloud-alibaba.version>2021.0.1.0</cloud-alibaba.version>
     </properties>
 
     <dependencyManagement>
@@ -60,12 +61,13 @@
             </dependency>
 
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
+                <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-alibaba-dependencies</artifactId>
                 <version>${cloud-alibaba.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
             <!--mybatis-plus 持久层-->
             <dependency>
                 <groupId>com.baomidou</groupId>

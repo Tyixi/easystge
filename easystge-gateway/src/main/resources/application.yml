@@ -1,0 +1,23 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: service-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848   #服务注册中心
+    gateway:
+      discovery:
+        locator:
+          enabled: true     #使用服务发现路由
+      routes:
+        - id: service-ucenter   #设置路由id
+          uri: lb://service-ucenter #设置路由uri  lb://nacos注册服务名称
+          predicates:
+            - Path=/easystgeucenter/**     #/red/{segment},/blue/{segment}  路由断言
+        - id: service-sms
+          uri: lb://service-sms
+          predicates:
+            - Path=/easystgesms/**

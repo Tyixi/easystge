@@ -3,7 +3,12 @@ package com.yixi.ucenter.service;
 import com.yixi.common.exception.BusinessException;
 import com.yixi.ucenter.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.yixi.ucenter.model.vo.UserLoginVo;
 import com.yixi.ucenter.model.vo.UserRegistVo;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
 * @author yixi
@@ -13,8 +18,24 @@ import com.yixi.ucenter.model.vo.UserRegistVo;
 public interface UserService extends IService<User> {
 
     /**
+     * 登录
+     * @param userLoginVo
+     * @return
+     */
+    @Transactional
+    Map login(UserLoginVo userLoginVo);
+
+    /**
      * 用户注册
      * @param userVo
      */
+    @Transactional
     String register(UserRegistVo userVo) throws BusinessException;
+
+    /**
+     * 退出登录
+     * @param request
+     * @return
+     */
+    int userLogout(HttpServletRequest request);
 }

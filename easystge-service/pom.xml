@@ -13,7 +13,6 @@
     <packaging>pom</packaging>
     <modules>
         <module>easystge-file</module>
-        <module>easystge-msm</module>
         <module>easystge-sms</module>
         <module>easystge-ucenter</module>
     </modules>
@@ -59,11 +58,12 @@
 <!--            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>-->
 <!--        </dependency>-->
 
-        <!--服务注册-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>-->
-<!--        </dependency>-->
+<!--        服务注册-->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
         <!--服务调用-->
 <!--        <dependency>-->
 <!--            <groupId>org.springframework.cloud</groupId>-->

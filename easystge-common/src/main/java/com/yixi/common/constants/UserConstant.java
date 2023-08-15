@@ -13,4 +13,10 @@ public class UserConstant {
      * 用户云盘初始化空间
      */
     public static final Long USER_INIT_TOTAL_SPACE = 10 * 1024 * 1024L;
+
+    /**
+     * 用户登录信息在redis中的key
+     */
+    public static final String USER_LOGIN_INFO = "easystge:user:login:info:";
+
 }
