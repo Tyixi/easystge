@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yixi.ucenter.mapper.UserLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.yixi.ucenter.model.entity.UserLog">
+            <id property="id" column="id" jdbcType="VARCHAR"/>
+            <result property="logDesc" column="log_desc" jdbcType="VARCHAR"/>
+            <result property="logTime" column="log_time" jdbcType="TIMESTAMP"/>
+            <result property="logEvent" column="log_event" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,desc,time,
+        event,user_id
+    </sql>
+</mapper>
