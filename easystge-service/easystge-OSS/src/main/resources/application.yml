@@ -30,9 +30,9 @@ spring:
         min-idle: 0
 
 oss:
-  endpoint: oss-cn-guangzhou.aliyuncs.com
-  accessKeyId: LTAI5t5dbeG4hectB2UVeTyr
-  accessKeySecret: XBuS0friqEOZ9Z6cNKrmnsL3Y88xdt
-  bucketName: easystge
-  bucketNamePublic: easystge-public
+  endpoint: xxxxxx
+  accessKeyId: xxxxxx
+  accessKeySecret: xxxxxx
+  bucketName: xxxxxx
+  bucketNamePublic: xxxxxx:i
   minChunkSize: 100
