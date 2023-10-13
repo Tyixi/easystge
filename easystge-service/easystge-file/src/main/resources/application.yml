@@ -3,7 +3,11 @@ server:
 
 spring:
   application:
-    name: service-ucenter
+    name: service-file
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848   #服务注册中心
   profiles:
     active: dev
   datasource:
@@ -11,8 +15,28 @@ spring:
     url: jdbc:mysql://localhost:3306/easystge?serverTimezone=GMT%2B8
     username: root
     password: cao123456
+  redis:
+    port: 6379
+    host: 192.168.31.133
+    database: 1
+    timeout: 1800000
+    lettuce:
+      pool:
+        max-active: 20
+        max-wait: -1
+        max-idle: 5
+        min-idle: 0
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
 
 
 mybatis-plus:
   configuration:
+    map-underscore-to-camel-case: true #自动驼峰映射
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+

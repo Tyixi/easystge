@@ -1,0 +1,30 @@
+server:
+  port: 8005
+
+spring:
+  application:
+    name: service-kodo
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848   #服务注册中心
+  profiles:
+    active: dev
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+
+qiniu:
+  accessKey: ZObY5I4MpJC-0CNWEJ9V0w17yC437hayyx4t2hLX
+  secretKey: mAPZZGmFXEy_azuu8dPMXMHzVj6idWbSzF2QCF7_
+  bucket: easystge
+  path: http://rzu71bqgk.hn-bkt.clouddn.com/
+
+
+
+
+

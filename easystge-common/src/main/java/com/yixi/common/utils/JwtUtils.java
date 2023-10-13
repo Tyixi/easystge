@@ -1,5 +1,6 @@
 package com.yixi.common.utils;
 
+import com.yixi.common.constants.SecurityConstant;
 import com.yixi.common.exception.BusinessException;
 import io.jsonwebtoken.*;
 import org.springframework.util.StringUtils;
@@ -13,7 +14,7 @@ import java.util.Date;
 public class JwtUtils {
 
 
-    public static final long EXPIRE = 60 * 1000 * 2; //token过期时间
+    public static final long EXPIRE = 60 * 1000 * 60; //token过期时间
     public static final String APP_SECRET = "ukc8BDbRigUDaY6pZFfWus2jZWLPHO"; //密钥 做加密操作
 
     /**
@@ -63,7 +64,8 @@ public class JwtUtils {
      */
     public static boolean checkToken(HttpServletRequest request) {
         try {
-            String jwtToken = request.getHeader("token");
+            String jwtToken = request.getHeader(SecurityConstant.AUTHORIZATION_HEAD);
+            jwtToken = jwtToken.replace(SecurityConstant.TOKEN_PREFIX, ""); // 去除前缀
             if(!StringUtils.hasLength(jwtToken)) return false;
             Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
         } catch (Exception e) {
@@ -79,9 +81,11 @@ public class JwtUtils {
      * @return
      */
     public static String getUserIdByJwtToken(HttpServletRequest request) {
-        String jwtToken = request.getHeader("token");
+        String jwtToken = request.getHeader(SecurityConstant.AUTHORIZATION_HEAD);
         if(!StringUtils.hasLength(jwtToken))
             return null;
+        jwtToken = jwtToken.replace(SecurityConstant.TOKEN_PREFIX, ""); // 去除前缀
+        System.out.println("jwtToken == "+jwtToken);
         Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
         Claims claims = claimsJws.getBody();
         return (String)claims.get("id");

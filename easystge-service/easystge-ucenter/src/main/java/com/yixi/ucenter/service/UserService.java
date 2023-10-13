@@ -5,6 +5,7 @@ import com.yixi.ucenter.model.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.yixi.ucenter.model.vo.UserLoginVo;
 import com.yixi.ucenter.model.vo.UserRegistVo;
+import com.yixi.ucenter.model.vo.UserSpaceVo;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,4 +39,19 @@ public interface UserService extends IService<User> {
      * @return
      */
     int userLogout(HttpServletRequest request);
+
+    /**
+     * 获取用户空间
+     * @param request
+     * @return
+     */
+    UserSpaceVo findUserSpace(HttpServletRequest request);
+
+    /**
+     * 刷新用户空间
+     * @param userId
+     */
+    void spaceRefresh(String userId);
+
+
 }

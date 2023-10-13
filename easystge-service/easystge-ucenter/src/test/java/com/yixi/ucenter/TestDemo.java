@@ -19,6 +19,8 @@ public class TestDemo {
     @Resource
     private UserLogMapper userLogMapper;
 
+
+
     @Test
     public void test(){
         UserLog userLog = new UserLog();

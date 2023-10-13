@@ -14,6 +14,15 @@ import lombok.Data;
  *41    用户异常
  *      001:邮箱已被注册
  *      002:账户异常
+ *      003:空间不足
+ *
+ *42   文件
+ *      001:目录下文件名重复
+ *      002:文件不存在
+ *      003:文件或文件夹已经存在
+ *      101:分享文件链接失效
+ *      102:提取码错误
+ *
  * 50
  *      000:系统内部异常
  */
@@ -35,6 +44,12 @@ public enum EventCode {
     INVALID_TOKEN(40103, "TOKEN无效",""),
     USER_EXIST_EXCEPTION(41001,"邮箱已被注册",""),
     ACCOUNT_EXCEPTION(41002,"账户异常",""),
+    ACCOUNT_SPACE_INSUFFICIENT(41003,"空间不足",""),
+    FILE_NAME_REPEAT(42001,"目录下文件名重复",""),
+    FILE_NOT_EXIST(42002,"文件不存在",""),
+    FILE_ALREADY_EXIST(42003,"文件或文件夹已经存在",""),
+    FILE_SHARE_INVALID(42101,"分享文件链接失效",""),
+    SHARE_CODE_ERROR(42102,"提取码错误",""),
     SYSTEM_ERROR(50000,"系统内部异常","");
 
     private final int code;

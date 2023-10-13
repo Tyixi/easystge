@@ -14,4 +14,12 @@ public class MConstant {
     public static final String CAPTCHA_CODE_KEY = "easystge:vc:";
 
 
+    /**
+     * 分享文件信息存储在redis中的key
+     */
+    public static final String REDIS_SHARE_KEY = "easystge:share:key:";
+
+    public static final String REDIS_DOWNLOAD_KEY = "easystge:download:";
+
+
 }

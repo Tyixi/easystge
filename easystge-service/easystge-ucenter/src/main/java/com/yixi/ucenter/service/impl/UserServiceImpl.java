@@ -15,6 +15,7 @@ import com.yixi.ucenter.model.entity.User;
 import com.yixi.ucenter.model.entity.UserLog;
 import com.yixi.ucenter.model.vo.UserLoginVo;
 import com.yixi.ucenter.model.vo.UserRegistVo;
+import com.yixi.ucenter.model.vo.UserSpaceVo;
 import com.yixi.ucenter.service.UserService;
 import com.yixi.ucenter.mapper.UserMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -33,7 +34,6 @@ import java.util.regex.Pattern;
 /**
 * @author yixi
 * @description 针对表【user】的数据库操作Service实现
-* @createDate 2023-08-05 22:05:19
 */
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService{
@@ -146,7 +146,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User safetyUser = getSafetyUser(user);
         try {
             redisTemplate.opsForValue().set(UserConstant.USER_LOGIN_INFO+user.getUserId(),
-                    JSONUtil.toJsonStr(user),
+                    JSONUtil.toJsonStr(safetyUser),
                     1,
                     TimeUnit.DAYS);
         }catch (Exception e){
@@ -281,6 +281,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         return 1;
+    }
+
+    @Override
+    public UserSpaceVo findUserSpace(HttpServletRequest request) {
+        // 获取用户id
+        String userId = JwtUtils.getUserIdByJwtToken(request);
+        if (userId == null){
+            throw new BusinessException(EventCode.PARAMS_ERROR);
+        }
+
+        // 根据id 获取用户信息
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("user_id", userId);
+        User user = this.baseMapper.selectOne(queryWrapper);
+
+        // 封装用户空间数据
+        UserSpaceVo userSpaceVo = new UserSpaceVo();
+        userSpaceVo.setUseSpace(user.getUseSpace());
+        userSpaceVo.setTotalSpace(user.getTotalSpace());
+
+        return userSpaceVo;
+    }
+
+    @Override
+    public void spaceRefresh(String userId) {
+        
     }
 
     /**

@@ -21,3 +21,16 @@ spring:
           uri: lb://service-sms
           predicates:
             - Path=/easystgesms/**
+        - id: service-file
+          uri: lb://service-file
+          predicates:
+            - Path=/fileService/**
+        - id: service-kodo
+          uri: lb://service-kodo
+          predicates:
+            - Path=/easystgekodo/**
+        - id: service-oss
+          uri: lb://service-oss
+          predicates:
+            - Path=/ossservice/**
+

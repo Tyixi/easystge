@@ -11,7 +11,7 @@ import com.yixi.common.utils.JwtUtils;
 public class Test1 {
     public static void main(String[] args) {
 
-        String token = JwtUtils.getJwtToken("12", "io");
+        String token = JwtUtils.getJwtToken("1689901755352621057", "1345286878@qq.com");
         System.out.println("token=" + token);
         System.out.println("id");
         System.out.println(JwtUtils.getUserIdByJwtToken("eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ5aXhpLXVzZXIiLCJpYXQiOjE2OTE4MDc4OTIsImV4cCI6MTY5MTgwNzk1MiwiaWQiOiIxMiIsImVtYWlsIjoiaW8ifQ.nZjblxlYT7LdZzq7Cb6ZL7MDJNtP_fNf_73MwizxHlA"));

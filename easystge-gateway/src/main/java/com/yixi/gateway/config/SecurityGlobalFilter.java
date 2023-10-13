@@ -3,6 +3,9 @@ package com.yixi.gateway.config;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.JsonObject;
 import com.yixi.common.constants.SecurityConstant;
+import com.yixi.common.exception.BusinessException;
+import com.yixi.common.utils.EventCode;
+import com.yixi.common.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -10,6 +13,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
@@ -39,6 +43,19 @@ public class SecurityGlobalFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         System.out.println("gateway filter");
         ServerHttpRequest request = exchange.getRequest();
+//        List<String> autoHeads = request.getHeaders().get(SecurityConstant.AUTHORIZATION_HEAD);
+//        if (autoHeads==null || autoHeads.size() < 1){
+//            throw new BusinessException(EventCode.NOT_LOGIN);
+//        }
+//        // 判断用户是否登录
+//        try {
+//            String jwtToken = autoHeads.get(0);
+//            JwtUtils.getUserIdByJwtToken(jwtToken);
+//        }catch (Exception e){
+//            throw new BusinessException(EventCode.NOT_LOGIN);
+//        }
+
+
         String path = request.getURI().getPath();
         //校验用户必须登录
         /**

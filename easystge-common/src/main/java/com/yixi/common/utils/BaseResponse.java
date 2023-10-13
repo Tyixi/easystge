@@ -1,10 +1,13 @@
 package com.yixi.common.utils;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.boot.jackson.JsonComponent;
 
 import java.io.Serializable;
 
 @Data
+@NoArgsConstructor
 public class BaseResponse<T> implements Serializable {
 
     private int code;
@@ -14,6 +17,8 @@ public class BaseResponse<T> implements Serializable {
     private String message;
 
     private String description;
+
+    private static final long serialVersionUID = 1L;
 
     public BaseResponse(int code, T data, String message, String description) {
         this.code = code;
