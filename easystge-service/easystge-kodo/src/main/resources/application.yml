@@ -19,10 +19,10 @@ spring:
       max-request-size: 20MB
 
 qiniu:
-  accessKey: ZObY5I4MpJC-0CNWEJ9V0w17yC437hayyx4t2hLX
-  secretKey: mAPZZGmFXEy_azuu8dPMXMHzVj6idWbSzF2QCF7_
-  bucket: easystge
-  path: http://rzu71bqgk.hn-bkt.clouddn.com/
+  accessKey: Xxxxx
+  secretKey: _xxx
+  bucket: xxxx
+  path: xxxx
 
 
 
