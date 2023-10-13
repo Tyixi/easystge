@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yixi.file.mapper.EFileMapper">
+
+    <resultMap id="BaseResultMap" type="com.yixi.file.model.entity.EFile">
+            <id property="fileId" column="file_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="fileMd5" column="file_md5" jdbcType="VARCHAR"/>
+            <result property="filePid" column="file_pid" jdbcType="VARCHAR"/>
+            <result property="fileSize" column="file_size" jdbcType="BIGINT"/>
+            <result property="fileCover" column="file_cover" jdbcType="VARCHAR"/>
+            <result property="filePath" column="file_path" jdbcType="VARCHAR"/>
+            <result property="folderType" column="folder_type" jdbcType="TINYINT"/>
+            <result property="fileCategory" column="file_category" jdbcType="TINYINT"/>
+            <result property="fileType" column="file_type" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="recoveryTime" column="recovery_time" jdbcType="TIMESTAMP"/>
+            <result property="isDeleted" column="is_deleted" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        file_id,user_id,file_name,
+        file_md5,file_pid,file_size,
+        file_cover,file_path,folder_type,
+        file_category,file_type,status,
+        recovery_time,is_deleted,create_time,
+        update_time
+    </sql>
+
+    <!--根据用户id获取用户使用的空间-->
+    <select id="selectUserUseSpace" resultType="java.lang.Long">
+        select IFNULL(sum(file_size), 0)
+        from e_file
+        where user_id = #{userId} AND is_deleted = 0
+    </select>
+</mapper>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yixi.file.mapper.FileRecycleMapper">
+
+    <resultMap id="BaseResultMap" type="com.yixi.file.model.entity.FileRecycle">
+            <id property="recycleId" column="recycle_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+            <result property="fileName" column="file_name" jdbcType="VARCHAR"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    
+    <resultMap id="fileRecycleDetail" type="com.yixi.file.model.vo.FileRecycleVo" extends="BaseResultMap">
+        <result property="folderType" column="folder_type"></result>
+        <result property="fileCategory" column="file_category"></result>
+        <result property="fileType" column="file_type"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        recycle_id,user_id,file_id,
+        file_name,end_time,is_delete,create_time,
+        update_time
+    </sql>
+
+    <sql id="File_Recycle_Detail" >
+        recycle_id,fr.user_id,fr.file_id,
+        af.file_name,fr.end_time,fr.is_delete,fr.create_time,
+        fr.update_time,af.folder_type,af.file_category,af.file_type
+    </sql>
+    
+    <select id="getFileRecycleListDetail" parameterType="com.yixi.file.model.vo.FileRecycleVo" resultMap="fileRecycleDetail">
+        SELECT <include refid="File_Recycle_Detail"/>
+        FROM file_recycle as fr INNER JOIN e_file as af
+        ON fr.user_id = af.user_id AND fr.file_id = af.file_id
+        <where>
+            <if test="fileRecycleVo.userId != null and fileRecycleVo.userId != ''">
+                AND fr.user_id = #{fileRecycleVo.userId}
+            </if>
+        </where>
+        ORDER BY fr.create_time DESC
+    </select>
+
+
+</mapper>

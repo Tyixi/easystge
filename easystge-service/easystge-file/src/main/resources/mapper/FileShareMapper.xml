@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yixi.file.mapper.FileShareMapper">
+
+    <resultMap id="BaseResultMap" type="com.yixi.file.model.entity.FileShare">
+            <id property="shareId" column="share_id" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="VARCHAR"/>
+            <result property="fileId" column="file_id" jdbcType="VARCHAR"/>
+            <result property="validType" column="valid_type" jdbcType="TINYINT"/>
+            <result property="shareCode" column="share_code" jdbcType="VARCHAR"/>
+            <result property="showCount" column="show_count" jdbcType="INTEGER"/>
+            <result property="endTime" column="end_time" jdbcType="TIMESTAMP"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="fileShareDetail" type="com.yixi.file.model.vo.FileShareVo" extends="BaseResultMap">
+        <result property="folderType" column="folder_type"></result>
+        <result property="fileCategory" column="file_category"></result>
+        <result property="fileType" column="file_type"></result>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        share_id,user_id,file_id,
+        valid_type,share_code,show_count,
+        end_time,create_time,update_time
+    </sql>
+
+    <sql id="File_Share_Detail">
+        fs.share_id,fs.user_id,fs.file_id,
+        fs.valid_type,fs.share_code,fs.show_count,
+        fs.end_time,fs.create_time,fs.update_time,
+        af.file_name,af.folder_type,af.file_category,af.file_type
+    </sql>
+
+    <select id="getFileShareListDetail"  parameterType="com.yixi.file.model.vo.FileShareVo" resultMap="fileShareDetail">
+        SELECT <include refid="File_Share_Detail"/>
+        FROM file_share as fs INNER JOIN e_file as af
+        ON fs.user_id = af.user_id AND fs.file_id = af.file_id
+        <where>
+            <if test="fileShareVo.userId != null and fileShareVo.userId != ''">
+                AND fs.user_id = #{fileShareVo.userId}
+            </if>
+        </where>
+        ORDER BY fs.create_time DESC
+    </select>
+
+    <update id="updateShareShowCount">
+        UPDATE file_share
+        set show_count = show_count+1
+        where share_id = #{shareId}
+    </update>
+
+</mapper>
