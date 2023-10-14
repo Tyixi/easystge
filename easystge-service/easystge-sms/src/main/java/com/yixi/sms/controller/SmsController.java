@@ -1,8 +1,11 @@
 package com.yixi.sms.controller;
 
+import com.yixi.common.constants.MQConstant;
 import com.yixi.common.exception.BusinessException;
+import com.yixi.common.model.bean.EmailVerify;
 import com.yixi.common.utils.*;
 import com.yixi.sms.service.SmsService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +24,12 @@ import java.util.Map;
 @RequestMapping("/easystgesms")
 public class SmsController {
 
-    final private SmsService smsService;
+    private final SmsService smsService;
+    private final RabbitTemplate rabbitTemplate;
 
-    public SmsController(SmsService smsService){
+    public SmsController(SmsService smsService,RabbitTemplate rabbitTemplate){
         this.smsService = smsService;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
 
@@ -40,9 +45,12 @@ public class SmsController {
 
         //生成随机值
         String code = RandomUtil.getSixBitRandom();
-        //调用service发送短信方法
-        boolean isSend = smsService.sendMailVc(code,email);
-        return ResultUtils.success(isSend);
+
+        //异步调用service发送短信方法
+        EmailVerify emailVerify = new EmailVerify(email,code);
+        rabbitTemplate.convertAndSend(MQConstant.PARK_ROUTE_EXCHANGE,MQConstant.USER_REG_EMAIL,emailVerify);
+
+        return ResultUtils.success(true);
     }
 
 }

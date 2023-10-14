@@ -12,6 +12,7 @@ import com.yixi.file.client.OssServiceClient;
 import com.yixi.file.model.dto.DownloadFileDto;
 import com.yixi.file.service.EFileService;
 import feign.Response;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public class ExterControlloer {
     private final EFileService eFileService;
     private final RedisTemplate<String, Object> redisTemplate;
     private final OssServiceClient ossServiceClient;
-    public ExterControlloer(EFileService eFileService,RedisTemplate redisTemplate,OssServiceClient ossServiceClient){
+    public ExterControlloer(EFileService eFileService,RedisTemplate redisTemplate,OssServiceClient ossServiceClient,RabbitTemplate rabbitTemplate){
         this.eFileService = eFileService;
         this.redisTemplate = redisTemplate;
         this.ossServiceClient = ossServiceClient;
