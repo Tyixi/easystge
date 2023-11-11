@@ -59,11 +59,7 @@ public class OssController {
         // 请求阿里云oss获取分片唯一ID
         String ossChunkId = ossUtil.getUploadId(taskKey);
         log.info("生成的oss分片唯一id：{}",ossChunkId);
-//        result.setOssChunkId(ossChunkId);
-//        result.setMinSliceSize(minChunkSize+"k");
-//        // 缓存到redis
-//        redisTemplate.opsForValue().set(ossChunkId,
-//                JSONUtil.toJsonStr(result));
+
         return ResultUtils.success(ossChunkId);
     }
 
@@ -86,6 +82,7 @@ public class OssController {
             uploadFileDto.setFileStream(file.getInputStream());
             uploadFileDto.setFileMd5((String) info.get("fileMd5"));
             uploadFileDto.setFileSize(file.getSize());
+            uploadFileDto.setMinSliceSize(Integer.valueOf((String) info.get("minSliceSize")));
         }catch (Exception e){
             e.printStackTrace();
             throw new BusinessException(EventCode.SYSTEM_ERROR,e.getMessage());
@@ -120,7 +117,6 @@ public class OssController {
             if (fileChunks == chunkIndex){
                 log.info("合并文件");
                 // 合并文件
-                System.out.println("uploadFileDto.getTaskId()+uploadFileDto.getFileName() is "+uploadFileDto.getTaskId()+uploadFileDto.getFileName());
                 url = ossUtil.completerPartUploadFile(uploadFileDto.getTaskId()+uploadFileDto.getFileName(), ossChunkId, new ArrayList<>(partETagMap.values()));
                 log.info("文件最终地址为：{}",url);
                 // oss 地址返回后保存并清除redis中的缓存

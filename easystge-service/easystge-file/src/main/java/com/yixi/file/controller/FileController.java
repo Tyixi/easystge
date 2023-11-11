@@ -5,6 +5,7 @@ import com.yixi.common.exception.BusinessException;
 import com.yixi.common.utils.BaseResponse;
 import com.yixi.common.utils.EventCode;
 import com.yixi.common.utils.ResultUtils;
+import com.yixi.common.utils.UserUtil;
 import com.yixi.file.client.OssServiceClient;
 import com.yixi.file.model.dto.FolderTreeDto;
 import com.yixi.file.model.entity.EFile;
@@ -40,36 +41,6 @@ public class FileController {
         this.ossServiceClient = ossServiceClient;
     }
 
-    @GetMapping("/tt2")
-    public void tt2(String url, HttpServletResponse response){
-        InputStream inputStream = null;
-
-        try {
-            Response ossServiceResponse = ossServiceClient.getFileInputStream(url);
-            if (ossServiceResponse.status() == 500){
-                throw new BusinessException(EventCode.PARAMS_ERROR);
-            }
-            Response.Body body = ossServiceResponse.body();
-            inputStream = body.asInputStream();
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            response.setHeader("Content-Disposition", ossServiceResponse.headers().get("Content-Disposition").toString().replace("[","").replace("]",""));
-            BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(response.getOutputStream());
-            int length = 0;
-            byte[] temp = new byte[1024 * 10];
-            while ((length = bufferedInputStream.read(temp)) != -1) {
-                bufferedOutputStream.write(temp, 0, length);
-            }
-            bufferedOutputStream.flush();
-            bufferedOutputStream.close();
-            bufferedInputStream.close();
-            inputStream.close();
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-
-    }
-
     /**
      * 分页查询
      * @return
@@ -77,11 +48,14 @@ public class FileController {
     @ApiOperation("查询文件")
     @GetMapping("/list/page")
     public BaseResponse listFilesByPage(FileQuery fileQuery, HttpServletRequest request){
-
+        System.out.println("查询文件: "+fileQuery);
         if(fileQuery == null){
             throw new BusinessException(EventCode.PARAMS_ERROR);
         }
-        Page<EFile> resultPage = eFileService.findUserFileList(request, fileQuery);
+        // 获取用户id
+        String userId = UserUtil.getUserIdByRequest(request);
+        Page<EFile> resultPage = eFileService.findUserFileList(userId, fileQuery);
+        System.out.println("大小："+resultPage.getSize());
         return ResultUtils.success(resultPage);
     }
 

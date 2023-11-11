@@ -10,9 +10,14 @@ package com.yixi.common.constants;
 public class EmailConstant {
 
     /**
-     * 邮箱验证码在redis中的key
+     * 用户注册 邮箱验证码在redis中的key
      */
     public static final String EMAIL_VC_KEY = "easystge:registerVC:";
+
+    /**
+     * 忘记密码 邮箱验证码在redis中的key
+     */
+    public static final String EMAIL_VC_FORGOT_KEY = "easystge:forgotVC:";
 
     /**
      * 邮箱验证码有效时间 单位分钟

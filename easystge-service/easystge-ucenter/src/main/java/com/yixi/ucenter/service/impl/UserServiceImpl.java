@@ -241,6 +241,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user.getUserId();
     }
 
+    @Override
+    public String forgotPWD(UserRegistVo userVo) throws BusinessException {
+        // 获取数据
+        String emailVC = userVo.getEmailVC();       //邮箱验证码
+        String email = userVo.getEmail();           //邮箱号码
+        String password = userVo.getPassword();     //密码
+        String verifyCode = userVo.getVerifyCode(); //验证码
+        String vcKey = userVo.getVcKey();           //验证码key
+
+        //校验-------------------------------------------------------------------
+        // 非空判断
+        if ( !(StringUtils.hasLength(emailVC) && StringUtils.hasLength(email)
+                && StringUtils.hasLength(password) && StringUtils.hasLength(verifyCode)
+                && StringUtils.hasLength(vcKey))){
+            throw new BusinessException(EventCode.NULL_ERROR);
+        }
+
+        // 判断图像验证码
+        String redisVC = (String) (redisTemplate.opsForValue().get(vcKey));
+        if (!StringUtils.hasLength(redisVC)){
+            throw new BusinessException(EventCode.PARAMS_ERROR,"验证码已过期");
+        }
+        if (!verifyCode.equals(redisVC)){
+            throw new BusinessException(EventCode.PARAMS_ERROR,"验证码错误");
+        }
+        redisTemplate.delete(vcKey); // 删除redis中图像验证码
+
+        //邮箱格式校验
+        String emailRegex = "[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?";
+        Matcher matcher = Pattern.compile(emailRegex).matcher(email);
+        if (!matcher.matches()){
+            throw new BusinessException(EventCode.PARAMS_ERROR,"邮箱格式错误");
+        }
+
+        // 判断邮箱是否已注册
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("email", email);
+        User sel_user = this.baseMapper.selectOne(queryWrapper);
+        if (null == sel_user){      // 用户不存在
+            throw new BusinessException(EventCode.USER_NOT_EXIST_EXCEPTION,"用户不存在");
+        }
+
+        // 判断邮箱验证码
+        String emailVCKey = EmailConstant.EMAIL_VC_FORGOT_KEY+email;    // redis保存邮箱验证码的 key
+        String redisEmailVC = (String)(redisTemplate.opsForValue().get(emailVCKey));
+        if (!StringUtils.hasLength(redisEmailVC)){
+            throw new BusinessException(EventCode.PARAMS_ERROR,"邮箱验证码已过期");
+        }
+        redisEmailVC = redisEmailVC.split("_")[0];  // 之前保存邮箱验证码的时候有在其后面用_拼接系统时间，需要截取
+        if (!emailVC.equals(redisEmailVC)){
+            throw new BusinessException(EventCode.PARAMS_ERROR,"邮箱验证码错误");
+        }
+        redisTemplate.delete(emailVCKey); // 删除redis中邮箱验证码
+
+
+        // 数据更新到数据库中
+        QueryWrapper queryWrapper1 = new QueryWrapper();
+        queryWrapper1.eq("email", email);
+        User user = new User();
+        user.setPassword(new BCryptPasswordEncoder().encode(password));  // 对密码进行加密保存
+        baseMapper.update(user,queryWrapper1);
+
+        // 返回用户id
+        return user.getUserId();
+    }
+
     /**
      * 退出登录
      * @param request

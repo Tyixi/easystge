@@ -21,5 +21,10 @@ public class MConstant {
 
     public static final String REDIS_DOWNLOAD_KEY = "easystge:download:";
 
+    /**
+     * 分享文件验证保存时间  单位：分钟
+     */
+    public static final Integer REDIS_SHARE_CODE_SAVE_TIME = 2;
+
 
 }

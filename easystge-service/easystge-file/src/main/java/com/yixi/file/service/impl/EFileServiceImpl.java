@@ -18,6 +18,7 @@ import com.yixi.common.user.UserInfo;
 import com.yixi.common.utils.BaseResponse;
 import com.yixi.common.utils.EventCode;
 import com.yixi.common.utils.JwtUtils;
+import com.yixi.common.utils.UserUtil;
 import com.yixi.file.client.KodoClient;
 import com.yixi.file.client.OssServiceClient;
 import com.yixi.file.client.UcenterClient;
@@ -61,7 +62,7 @@ public class EFileServiceImpl extends ServiceImpl<EFileMapper, EFile>
     private final UcenterClient ucenterClient;
     private final KodoClient kodoClient;
     private final OssServiceClient ossServiceClient;
-    private final static Integer minChunkSize = 100;
+    private final static Integer minChunkSize = 200;
 
 
     public EFileServiceImpl(RedisTemplate redisTemplate, EFileMapper eFileMapper, UcenterClient ucenterClient, KodoClient kodoClient, OssServiceClient ossServiceClient,FileRecycleService fileRecycleService){
@@ -172,7 +173,7 @@ public class EFileServiceImpl extends ServiceImpl<EFileMapper, EFile>
         result.setMinSliceSize(minChunkSize);
 
         //保存到redis
-        redisTemplate.opsForValue().set(ossChunkId, JSONUtil.toJsonStr(result));
+//        redisTemplate.opsForValue().set(ossChunkId, JSONUtil.toJsonStr(result));
         return result;
     }
 
@@ -217,6 +218,7 @@ public class EFileServiceImpl extends ServiceImpl<EFileMapper, EFile>
             map.put("chunks",uploadFileVo.getChunks());
             map.put("ossChunkId",uploadFileVo.getOssChunkId());
             map.put("fileMd5",uploadFileVo.getFileMd5());
+            map.put("minSliceSize", minChunkSize);
             baseResponse = ossServiceClient.uploadChunk(map,uploadFileVo.getFile());
         }catch (Exception e){
             e.printStackTrace();
@@ -291,17 +293,18 @@ public class EFileServiceImpl extends ServiceImpl<EFileMapper, EFile>
     }
 
     @Override
-    public Page<EFile> findUserFileList(HttpServletRequest request, FileQuery fileQuery) {
-        if (request == null || fileQuery == null){
+    public Page<EFile> findUserFileList(String userId, FileQuery fileQuery) {
+        if (fileQuery == null){
             throw new BusinessException(EventCode.NULL_ERROR);
         }
 
-        // 获取用户id
-        String userId = JwtUtils.getUserIdByJwtToken(request);
-        if (userId == null){
-            throw new BusinessException(EventCode.PARAMS_ERROR);
-        }
+//        // 获取用户id
+//        String userId = JwtUtils.getUserIdByJwtToken(request);
+//        if (userId == null){
+//            throw new BusinessException(EventCode.PARAMS_ERROR);
+//        }
 
+//        String userId = UserUtil.getUserIdByRequest(request);
         fileQuery.setUserId(userId);
         EFile eFile = new EFile();
         BeanUtil.copyProperties(fileQuery, eFile);
@@ -455,8 +458,6 @@ public class EFileServiceImpl extends ServiceImpl<EFileMapper, EFile>
             fileRecycle.setEndTime(LocalDateTime.now().plusDays(FileRecycleConstant.FILE_RECYCLE_SAVE_TIME)); // 保存时间长度
             fileRecycles.add(fileRecycle);
         }
-
-        System.out.println("要保存到回收站的数据数量 "+fileRecycles.size());
 
         // 保存
         fileRecycleService.saveBatch(fileRecycles);
@@ -745,6 +746,50 @@ public class EFileServiceImpl extends ServiceImpl<EFileMapper, EFile>
         return code;
     }
 
+    @Override
+    public void checkRootFilePid(String filePid, String userId, String fileId) {
+        if (!StringUtils.hasLength(fileId)){
+            throw new BusinessException(EventCode.PARAMS_ERROR);
+        }
+        if(filePid.equals(fileId)){
+            return;
+        }
+        checkIsFilePid(filePid, fileId, userId);
+    }
+
+    @Override
+    public List<EFile> filePath(String[] pathArr) {
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.in("file_id", pathArr);
+        // 构建排序字段
+        String orderBy = "ORDER BY FIELD(file_id,\"" + org.apache.commons.lang3.StringUtils.join(pathArr, "\",\"") + "\")";
+        queryWrapper.last(true,orderBy);
+        List<EFile> sel_list = baseMapper.selectList(queryWrapper);
+        return sel_list;
+    }
+
+    /**
+     * 判断filePid 是否是 fileId 的父目录
+     * @param filePid
+     * @param fileId
+     * @param userId
+     */
+    public void checkIsFilePid(String filePid, String fileId, String userId){
+
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq("file_id", fileId);
+        EFile sel_eFile = baseMapper.selectOne(queryWrapper);
+        if (null == sel_eFile){
+            throw new BusinessException(EventCode.PARAMS_ERROR);
+        }
+        if ("0".equals(sel_eFile.getFilePid())){
+            throw new BusinessException(EventCode.PARAMS_ERROR);
+        }
+        if (sel_eFile.getFilePid().equals(filePid)){
+            return;
+        }
+        checkIsFilePid(filePid, sel_eFile.getFilePid(), userId);
+    }
 
 
     public String fileRename(String filePid, String userId, String fileName){

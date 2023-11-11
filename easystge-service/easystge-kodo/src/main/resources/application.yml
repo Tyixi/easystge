@@ -23,8 +23,3 @@ qiniu:
   secretKey: xxx
   bucket: xx
   path: xxx
-
-
-
-
-

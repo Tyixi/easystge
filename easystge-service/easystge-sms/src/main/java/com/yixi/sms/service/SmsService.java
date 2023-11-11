@@ -9,5 +9,5 @@ import com.yixi.common.exception.BusinessException;
  */
 public interface SmsService {
     boolean sendMailVc(String code, String email) throws BusinessException;
-
+    boolean sendMailForgotVc(String code, String email) throws BusinessException;
 }

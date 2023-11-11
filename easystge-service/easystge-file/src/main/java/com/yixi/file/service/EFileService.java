@@ -46,11 +46,11 @@ public interface EFileService extends IService<EFile> {
 
     /**
      * 获取文件列表
-     * @param request
+     * @param userId
      * @param fileQuery
      * @return
      */
-    Page<EFile> findUserFileList(HttpServletRequest request, FileQuery fileQuery);
+    Page<EFile> findUserFileList(String userId, FileQuery fileQuery);
 
     /**
      * 用户批量删除文件
@@ -119,5 +119,16 @@ public interface EFileService extends IService<EFile> {
      */
     String createDownloadCode(HttpServletRequest request,String fileId);
 
+
+    /**
+     * 检查
+     * @param filePid
+     * @param userId
+     * @param fileId
+     */
+    void checkRootFilePid(String filePid,String userId, String fileId);
+
+
+    List<EFile> filePath(String[] pathArr);
 
 }

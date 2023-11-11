@@ -10,8 +10,10 @@ import com.yixi.common.utils.EventCode;
 import com.yixi.common.utils.ResultUtils;
 import com.yixi.file.client.OssServiceClient;
 import com.yixi.file.model.dto.DownloadFileDto;
+import com.yixi.file.model.entity.EFile;
 import com.yixi.file.service.EFileService;
 import feign.Response;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.StringUtils;
@@ -27,6 +29,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * @author yixi
@@ -105,6 +108,15 @@ public class ExterControlloer {
             e.printStackTrace();
         }
 
+    }
+
+    @ApiOperation("获取当前目录路径")
+    @GetMapping("/filePath")
+    public BaseResponse filePath(HttpServletRequest request, String path){
+        //将传递过来的path路径进行分割
+        String[] pathArr = path.split("/");
+        List<EFile> eFiles = eFileService.filePath(pathArr);
+        return ResultUtils.success(eFiles);
     }
 
 }

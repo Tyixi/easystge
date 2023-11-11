@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -50,15 +51,15 @@ public class LoginController {
 
     @ApiOperation("登录")
     @PostMapping("/login")
-    public BaseResponse login(@RequestBody UserLoginVo loginVo){
+    public BaseResponse login(@RequestBody UserLoginVo loginVo, HttpServletResponse response){
         //判断请求参数是否为空
         if (loginVo == null){
             return ResultUtils.error(EventCode.PARAMS_ERROR);
         }
         // 进行登录
         Map result = userService.login(loginVo);
-
-        return ResultUtils.success(result);
+        response.setHeader("Authorization", (String) result.get("loginToken"));
+        return ResultUtils.success(result.get("userInfo"));
     }
 
     @ApiOperation("注册")
@@ -74,8 +75,19 @@ public class LoginController {
         return ResultUtils.success(result);
     }
 
+    @ApiOperation("找回密码")
+    @PostMapping("/forgotPWD")
+    public BaseResponse forgotPWD(@RequestBody UserRegistVo userVo) throws BusinessException {
+        //判断请求参数是否为空
+        if (userVo == null) {
+            return ResultUtils.error(EventCode.PARAMS_ERROR);
+        }
+        String result = userService.forgotPWD(userVo);
+        return ResultUtils.success(result);
+    }
 
-    @ApiOperation("获取邮箱验证码")
+
+    @ApiOperation("获取图像验证码")
     @GetMapping(value = "/code")
     public BaseResponse getCode() {
         // 获取运算的结果

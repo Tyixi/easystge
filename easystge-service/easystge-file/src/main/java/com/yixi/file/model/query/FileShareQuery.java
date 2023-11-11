@@ -26,6 +26,11 @@ public class FileShareQuery extends PageRequest implements Serializable {
     private String fileId;
 
     /**
+     * 文件父id
+     */
+    private String filePid;
+
+    /**
      * 文件名
      */
     private String fileName;

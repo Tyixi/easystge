@@ -38,4 +38,14 @@
         from e_file
         where user_id = #{userId} AND is_deleted = 0
     </select>
+    
+<!--    -->
+<!--    <select id="selectFilePath" resultMap="BaseResultMap">-->
+<!--        SELECT -->
+<!--        <include refid="Base_Column_List"/>-->
+<!--        FROM e_file-->
+<!--        <if test="query.orderBy!=null">-->
+<!--            order by ${query.orderBy}-->
+<!--        </if>-->
+<!--    </select>-->
 </mapper>

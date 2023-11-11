@@ -1,5 +1,6 @@
 package com.yixi.file.service.impl;
 
+import cn.hutool.core.date.BetweenFormatter;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -72,15 +73,24 @@ public class FileRecycleServiceImpl extends ServiceImpl<FileRecycleMapper, FileR
     }
 
     public static void main(String[] args) {
-        String dateStr1 = "2023-10-06 0:42:59";
+//        String dateStr1 = "2023-10-06 0:42:59";
+//        Date date1 = DateUtil.date();
+//
+//        String dateStr2 = "2023-10-04 00:42:59";
+//        Date date2 = DateUtil.parse(dateStr2);
+//
+//        //相差一个月，31天
+//        long betweenDay = DateUtil.between(date1, date2, DateUnit.DAY);
+
+
+        //  Sun Nov 05 13:34:08 CST 2023
+        //        String dateStr1 = "2023-10-06 0:42:59";
         Date date1 = DateUtil.date();
-
-        String dateStr2 = "2023-10-04 00:42:59";
+//
+        String dateStr2 = "2023-11-05 11:51:00";
         Date date2 = DateUtil.parse(dateStr2);
-
-        //相差一个月，31天
-        long betweenDay = DateUtil.between(date1, date2, DateUnit.DAY);
-        System.out.println("betweenDay is "+betweenDay);
+        long betweenMin = DateUtil.between(date1, date2, DateUnit.MINUTE);
+        System.out.println("betweenDay is "+betweenMin);
     }
 }
 

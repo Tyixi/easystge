@@ -42,15 +42,29 @@ public class SmsController {
     @GetMapping("/open/register/vc/{email}")
     public BaseResponse sendSmsRegister(@PathVariable String email) throws Exception{
         if (!StringUtils.hasLength(email)) throw new BusinessException(EventCode.NULL_ERROR);
-
         //生成随机值
         String code = RandomUtil.getSixBitRandom();
-
         //异步调用service发送短信方法
         EmailVerify emailVerify = new EmailVerify(email,code);
         rabbitTemplate.convertAndSend(MQConstant.PARK_ROUTE_EXCHANGE,MQConstant.USER_REG_EMAIL,emailVerify);
-
         return ResultUtils.success(true);
     }
 
+
+    /**
+     * 找回密码-发送邮箱验证码
+     * @param email
+     * @return
+     * @throws Exception
+     */
+    @GetMapping("/open/forgot/vc/{email}")
+    public BaseResponse sendSmsForgot(@PathVariable String email) throws Exception{
+        if (!StringUtils.hasLength(email)) throw new BusinessException(EventCode.NULL_ERROR);
+        //生成随机值
+        String code = RandomUtil.getSixBitRandom();
+        //异步调用service发送短信方法
+        EmailVerify emailVerify = new EmailVerify(email,code);
+        rabbitTemplate.convertAndSend(MQConstant.PARK_ROUTE_EXCHANGE,MQConstant.USER_FORGOT_PWD_EMAIL,emailVerify);
+        return ResultUtils.success(true);
+    }
 }

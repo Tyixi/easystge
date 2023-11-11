@@ -52,7 +52,6 @@ public class FileShareController {
         if (request == null || fileShare == null){
             throw new BusinessException(EventCode.NULL_ERROR);
         }
-        System.out.println("shareFile is "+fileShare);
         fileShareService.saveFileShare(request, fileShare);
         return ResultUtils.success(fileShare);
     }

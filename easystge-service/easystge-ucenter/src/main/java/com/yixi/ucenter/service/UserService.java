@@ -34,6 +34,15 @@ public interface UserService extends IService<User> {
     String register(UserRegistVo userVo) throws BusinessException;
 
     /**
+     * 用户找回密码
+     * @param userVo
+     * @return
+     * @throws BusinessException
+     */
+    @Transactional
+    String forgotPWD(UserRegistVo userVo) throws BusinessException;
+
+    /**
      * 退出登录
      * @param request
      * @return

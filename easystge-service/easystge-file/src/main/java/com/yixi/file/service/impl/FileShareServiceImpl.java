@@ -94,8 +94,6 @@ public class FileShareServiceImpl extends ServiceImpl<FileShareMapper, FileShare
             fileShareListDetail.getRecords().get(i).setValidTime(betweenDay);
         }
 
-
-
         return fileShareListDetail;
     }
 
@@ -129,7 +127,7 @@ public class FileShareServiceImpl extends ServiceImpl<FileShareMapper, FileShare
 
         // 自定义分享码
         if (!StringUtils.hasLength(fileShare.getShareCode())){
-            fileShare.setShareCode(RandomUtil.randomString(5)); // 随机生成长度为5的字符串
+            fileShare.setShareCode(RandomUtil.randomString(4)); // 随机生成长度为5的字符串
         }
 
         this.baseMapper.insert(fileShare);

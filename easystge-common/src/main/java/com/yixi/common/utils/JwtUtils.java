@@ -45,15 +45,15 @@ public class JwtUtils {
      * @param jwtToken
      * @return
      */
-    public static boolean checkToken(String jwtToken) {
+    public static boolean checkToken(String jwtToken) throws Exception{
         if(!StringUtils.hasLength(jwtToken)) return false;
-        try {
+//        try {
             //根据密钥验证token是否有效
             Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
         return true;
     }
 
@@ -86,9 +86,14 @@ public class JwtUtils {
             return null;
         jwtToken = jwtToken.replace(SecurityConstant.TOKEN_PREFIX, ""); // 去除前缀
         System.out.println("jwtToken == "+jwtToken);
-        Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
-        Claims claims = claimsJws.getBody();
-        return (String)claims.get("id");
+        try {
+            Jws<Claims> claimsJws = Jwts.parser().setSigningKey(APP_SECRET).parseClaimsJws(jwtToken);
+            Claims claims = claimsJws.getBody();
+            return (String)claims.get("id");
+        }catch (Exception e){
+            return null;
+        }
+
     }
 
 

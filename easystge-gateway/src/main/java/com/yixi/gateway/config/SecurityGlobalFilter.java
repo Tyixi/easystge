@@ -1,11 +1,15 @@
 package com.yixi.gateway.config;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.JsonObject;
 import com.yixi.common.constants.SecurityConstant;
 import com.yixi.common.exception.BusinessException;
 import com.yixi.common.utils.EventCode;
 import com.yixi.common.utils.JwtUtils;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.logging.log4j.util.Strings;
@@ -24,6 +28,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Date;
 import java.util.List;
 
 
@@ -38,50 +43,43 @@ import java.util.List;
 public class SecurityGlobalFilter implements GlobalFilter, Ordered {
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        System.out.println("gateway filter");
         ServerHttpRequest request = exchange.getRequest();
-//        List<String> autoHeads = request.getHeaders().get(SecurityConstant.AUTHORIZATION_HEAD);
-//        if (autoHeads==null || autoHeads.size() < 1){
-//            throw new BusinessException(EventCode.NOT_LOGIN);
-//        }
-//        // 判断用户是否登录
-//        try {
-//            String jwtToken = autoHeads.get(0);
-//            JwtUtils.getUserIdByJwtToken(jwtToken);
-//        }catch (Exception e){
-//            throw new BusinessException(EventCode.NOT_LOGIN);
-//        }
-
-
         String path = request.getURI().getPath();
-        //校验用户必须登录
-        /**
-         * oauth 接口都放行，其他的都要拦截查看权限
-         * 1、获取token 查看用户是否已登录
-         * 2、已登录用户查看是否有操作权限
-         * 3、已登录且有权限才放行
-         */
-        if(antPathMatcher.match("/**/auth/**", path)) {
-            System.out.println("必须登录");
-            List<String> tokenList = request.getHeaders().get("token");
-            if(null == tokenList) {
-                ServerHttpResponse response = exchange.getResponse();
-                return out(response);
-            } else {
-//                Boolean isCheck = JwtUtils.checkToken(tokenList.get(0));
-//                if(!isCheck) {
-                ServerHttpResponse response = exchange.getResponse();
-                return out(response);
-//                }
+        if (!(antPathMatcher.match("/**/open/**", path) || antPathMatcher.match("/**/exter/**", path))){    // 需要进行拦截验证身份
+            System.out.println(request.getHeaders());
+            List<String> tokenList = request.getHeaders().get(SecurityConstant.AUTHORIZATION_HEAD);
+            // 获取用户身份令牌
+            String jwtToken = null;
+            boolean isLogin = false;
+            try {
+                jwtToken = tokenList.get(0).replace(SecurityConstant.TOKEN_PREFIX, ""); // 去除前缀
+                // 检测token
+                isLogin = JwtUtils.checkToken(jwtToken);
+                // 获取token失效时间
+                Date expirationTime = JwtUtils.getExpiration(jwtToken);
+                Date currentTime = new Date();
+                // token有效时间如果小于10分钟，则给用户重新设置token
+                long between = DateUtil.between(currentTime, expirationTime, DateUnit.MINUTE);
+
+                if (between < 10){
+                    // 获取 用户id 和 用户邮箱
+                    Claims claim = JwtUtils.getClaim(jwtToken);
+                    String userId = (String)claim.get("id");
+                    String email = (String)claim.get("email");
+                    // 生成新的 token
+                    String new_jwtToken = JwtUtils.getJwtToken(userId, email);
+                    // 将生成的token保存到response中
+                    ServerHttpResponse response = exchange.getResponse();
+                    response.getHeaders().set("Authorization",new_jwtToken);
+                }
+            }catch (Exception e){
+                return out(exchange.getResponse());
             }
-        }
-        //内部服务接口，不允许外部访问
-        if(antPathMatcher.match("/**/inner/**", path)) {
-            ServerHttpResponse response = exchange.getResponse();
-            return out(response);
+            if (!isLogin){  // 没有登录
+                return out(exchange.getResponse());
+            }
         }
         return chain.filter(exchange);
     }
