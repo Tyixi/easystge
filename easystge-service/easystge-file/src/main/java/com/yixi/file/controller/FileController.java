@@ -48,7 +48,6 @@ public class FileController {
     @ApiOperation("查询文件")
     @GetMapping("/list/page")
     public BaseResponse listFilesByPage(FileQuery fileQuery, HttpServletRequest request){
-        System.out.println("查询文件: "+fileQuery);
         if(fileQuery == null){
             throw new BusinessException(EventCode.PARAMS_ERROR);
         }
@@ -69,7 +68,6 @@ public class FileController {
     @ApiOperation("彻底删除文件")
     @DeleteMapping("/file/delete")
     public BaseResponse deleteFile(@RequestBody Set<String> ids, HttpServletRequest request){
-        System.out.println("deleteFile ids is "+ids);
         if (request == null || ids == null){
             throw new BusinessException(EventCode.SYSTEM_ERROR);
         }
@@ -84,7 +82,6 @@ public class FileController {
     @ApiOperation("新建目录")
     @PostMapping("/newFolder")
     public BaseResponse newFolder(@RequestBody EFile eFile, HttpServletRequest request){
-
         EFile new_folder = eFileService.newFolder(request, eFile);
         return ResultUtils.success(new_folder);
     }
